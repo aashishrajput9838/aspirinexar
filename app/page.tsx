@@ -139,7 +139,7 @@ export default function Component() {
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               We offer a full spectrum of digital services designed to elevate your business and drive sustainable
-              growth in today's competitive landscape.
+              growth in today&apos;s competitive landscape.
             </p>
           </div>
 
@@ -332,8 +332,8 @@ export default function Component() {
                 <p className="text-lg text-gray-600 leading-relaxed">
                   Founded with a vision to bridge the gap between aspiration and achievement, Aspirinexar has been at
                   the forefront of digital transformation for over a decade. We combine cutting-edge technology with
-                  human-centered design to create solutions that not only meet today's challenges but anticipate
-                  tomorrow's opportunities.
+                  human-centered design to create solutions that not only meet today&apos;s challenges but anticipate
+                  tomorrow&apos;s opportunities.
                 </p>
               </div>
 
@@ -386,7 +386,7 @@ export default function Component() {
               </span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Let's discuss how Aspirinexar can help you achieve your digital goals. Our team of experts is ready to
+              Let&apos;s discuss how Aspirinexar can help you achieve your digital goals. Our team of experts is ready to
               provide personalized solutions for your unique challenges.
             </p>
           </div>
@@ -432,7 +432,7 @@ export default function Component() {
             <Card className="shadow-xl border-0">
               <CardHeader>
                 <CardTitle className="text-2xl">Send us a message</CardTitle>
-                <CardDescription>Fill out the form below and we'll get back to you within 24 hours.</CardDescription>
+                <CardDescription>Fill out the form below and we&apos;ll get back to you within 24 hours.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
