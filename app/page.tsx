@@ -6,18 +6,10 @@ import { Badge } from "@/components/ui/badge"
 import {
   ArrowRight,
   CheckCircle,
-  Star,
-  Users,
-  Zap,
-  Shield,
-  Globe,
   Mail,
   Phone,
   MapPin,
   Menu,
-  Rocket,
-  Target,
-  TrendingUp,
   Code,
 } from "lucide-react"
 import Image from "next/image"
