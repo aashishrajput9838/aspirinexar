@@ -39,12 +39,14 @@ export default function Component() {
               <Link href="#about" className="text-sm font-medium hover:text-blue-600 transition-colors">
                 About
               </Link>
-              <Link href="#contact" className="text-sm font-medium hover:text-blue-600 transition-colors">
+              <Link href="/contact" className="text-sm font-medium hover:text-blue-600 transition-colors">
                 Contact
               </Link>
-              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                Get Started
-              </Button>
+              <Link href="/login">
+                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                  Log In
+                </Button>
+              </Link>
             </nav>
 
             <Button variant="ghost" size="icon" className="md:hidden">
@@ -178,100 +180,6 @@ export default function Component() {
                     Learn More
                   </Button>
                 </Link>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section id="contact" className="py-20 bg-white">
-        <div className="container mx-auto px-4 lg:px-6">
-          <div className="text-center space-y-4 mb-16">
-            <Badge className="bg-green-100 text-green-700">Get In Touch</Badge>
-            <h2 className="text-3xl lg:text-5xl font-bold">
-              Ready to Transform Your
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                {" "}
-                Business?
-              </span>
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Let&apos;s discuss how Aspirinexar can help you achieve your digital goals. Our team of experts is ready to
-              provide personalized solutions for your unique challenges.
-            </p>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-12">
-            <div className="space-y-8">
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                    <Mail className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold">Email Us</h3>
-                    <p className="text-gray-600">aspirinexar@gmail.com</p>
-                    <p className="text-gray-600">aashishrajput9838@gmail.com</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
-                    <Phone className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold">Call Us</h3>
-                    <p className="text-gray-600">+91 9319977285</p>
-                    <p className="text-gray-600">+91 9838231726</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center">
-                    <MapPin className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold">Visit Us</h3>
-                    <p className="text-gray-600">Knowledge Park -3</p>
-                    <p className="text-gray-600">Greater Noida, 201310</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <Card className="shadow-xl border-0">
-              <CardHeader>
-                <CardTitle className="text-2xl">Send us a message</CardTitle>
-                <CardDescription>Fill out the form below and we&apos;ll get back to you within 24 hours.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">First Name</label>
-                    <Input placeholder="John" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Last Name</label>
-                    <Input placeholder="Doe" />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Email</label>
-                  <Input type="email" placeholder="john@example.com" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Company</label>
-                  <Input placeholder="Your Company" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Message</label>
-                  <Textarea placeholder="Tell us about your project..." className="min-h-[120px]" />
-                </div>
-                <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                  Send Message
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
               </CardContent>
             </Card>
           </div>
