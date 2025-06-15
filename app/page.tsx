@@ -1,16 +1,12 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import {
   ArrowRight,
   CheckCircle,
-  Mail,
-  Phone,
-  MapPin,
   Menu,
   Code,
+  Clock,
 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -137,14 +133,8 @@ export default function Component() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg hover:-translate-y-2">
               <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mb-4">
-                  <Image
-                    src="/images/Typink-logo.png"
-                    alt="Typink Logo"
-                    width={48}
-                    height={48}
-                    className="rounded-lg"
-                  />
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mb-4">
+                  <Code className="h-6 w-6 text-white" />
                 </div>
                 <CardTitle className="text-xl">Typink</CardTitle>
                 <CardDescription>
@@ -176,6 +166,48 @@ export default function Component() {
                   <Badge className="bg-green-100 text-green-700">PyAutoGUI</Badge>
                 </div>
                 <Link href="/typink">
+                  <Button className="w-full mt-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                    Learn More
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg hover:-translate-y-2">
+              <CardHeader>
+                <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mb-4">
+                  <Clock className="h-6 w-6 text-white" />
+                </div>
+                <CardTitle className="text-xl">GlassTick</CardTitle>
+                <CardDescription>
+                  A minimal, transparent floating clock widget that stays on top of other windows with customizable settings.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Always on Top
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Transparent Background
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Draggable Interface
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Customizable Settings
+                  </li>
+                </ul>
+                <div className="mt-4 space-y-2">
+                  <Badge className="bg-blue-100 text-blue-700">Python</Badge>
+                  <Badge className="bg-purple-100 text-purple-700">CustomTkinter</Badge>
+                  <Badge className="bg-green-100 text-green-700">Windows</Badge>
+                </div>
+                <Link href="/floating-clock">
                   <Button className="w-full mt-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
                     Learn More
                   </Button>
