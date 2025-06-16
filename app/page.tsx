@@ -7,6 +7,8 @@ import {
   Menu,
   Code,
   Clock,
+  Search,
+  Home
 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -15,31 +17,46 @@ export default function Component() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-md">
+      <header className="sticky top-0 z-50 w-full bg-black text-white py-3">
         <div className="container mx-auto px-4 lg:px-6">
           <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Image src="/InShot_20240426_153104300.jpg" alt="Aspirinexar Logo" width={40} height={40} className="rounded-lg" />
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Aspirinexar
-              </span>
+            <div className="flex items-center space-x-4">
+              <Image src="/InShot_20240426_153104300.jpg" alt="Aspirinexar Logo" width={50} height={50} className="rounded-lg my-0" />
+              
+              <div className="flex space-x-6">
+                <Link href="#home" className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors">
+                  <Home className="h-5 w-5" />
+                  <span className="text-sm font-medium">Home</span>
+                </Link>
+                <div className="relative flex items-center bg-gray-800 rounded-full pl-3 pr-2 py-2">
+                  <Search className="h-5 w-5 text-gray-400 mr-2" />
+                  <input 
+                    type="text" 
+                    placeholder="What do you want to play?"
+                    className="bg-transparent text-white placeholder-gray-400 focus:outline-none w-64"
+                  />
+                </div>
+              </div>
             </div>
 
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link href="#home" className="text-sm font-medium hover:text-blue-600 transition-colors">
-                Home
+            <nav className="hidden md:flex items-center space-x-6">
+              <Link href="#premium" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+                Premium
               </Link>
-              <Link href="#services" className="text-sm font-medium hover:text-blue-600 transition-colors">
-                Services
+              <Link href="/contact" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+                Support
               </Link>
-              <Link href="#about" className="text-sm font-medium hover:text-blue-600 transition-colors">
-                About
+              <Link href="#download" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+                Download
               </Link>
-              <Link href="/contact" className="text-sm font-medium hover:text-blue-600 transition-colors">
-                Contact
+              <Link href="#install-app" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+                Install App
+              </Link>
+              <Link href="/signup" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+                Sign up
               </Link>
               <Link href="/login">
-                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                <Button className="bg-white text-black font-bold px-5 py-2 rounded-full hover:scale-105 transition-transform">
                   Log In
                 </Button>
               </Link>
@@ -208,6 +225,50 @@ export default function Component() {
                   <Badge className="bg-green-100 text-green-700">Windows</Badge>
                 </div>
                 <Link href="/floating-clock">
+                  <Button className="w-full mt-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                    Learn More
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg hover:-translate-y-2">
+              <CardHeader>
+                <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center mb-4">
+                  <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                  </svg>
+                </div>
+                <CardTitle className="text-xl">NightLayer</CardTitle>
+                <CardDescription>
+                  A screen overlay tool that creates a semi-transparent black layer to reduce eye strain, with customizable opacity and keyboard shortcuts.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Toggle with Ctrl + Space
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Adjustable Opacity
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    System Tray Integration
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Minimal Interface
+                  </li>
+                </ul>
+                <div className="mt-4 space-y-2">
+                  <Badge className="bg-blue-100 text-blue-700">Python</Badge>
+                  <Badge className="bg-purple-100 text-purple-700">PyWin32</Badge>
+                  <Badge className="bg-green-100 text-green-700">Windows</Badge>
+                </div>
+                <Link href="/nightlayer">
                   <Button className="w-full mt-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
                     Learn More
                   </Button>
