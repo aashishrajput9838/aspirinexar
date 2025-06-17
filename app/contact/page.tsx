@@ -34,7 +34,7 @@ export default function ContactUsPage() {
               {/* Aspirinexar Logo */}
               <Link href="/" className="flex items-center space-x-2 cursor-pointer">
                 <Image src="/InShot_20240426_153104300.jpg" alt="Aspirinexar Logo" width={50} height={50} className="rounded-lg my-0" quality={100} />
-                <h1 className="text-xl flex items-end font-alfa-slab-one hover:text-green-500 transition-colors">
+                <h1 className="text-xl flex items-end alfa-slab-one-regular hover:text-green-500 transition-colors">
                   Aspirinexar<sup className="text-xs ml-0.5 mb-2">®</sup>
                 </h1>
               </Link>
