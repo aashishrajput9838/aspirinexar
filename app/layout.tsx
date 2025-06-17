@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Alfa_Slab_One } from "next/font/google";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -11,12 +10,6 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-});
-
-const alfaSlabOne = Alfa_Slab_One({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-alfa-slab-one",
 });
 
 export const metadata: Metadata = {

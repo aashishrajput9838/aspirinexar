@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronDown, Mail, Phone, MapPin, Search, Globe, ChevronRight } from "lucide-react";
+import { Search, Globe } from "lucide-react";
 import SpotifyFooter from '../../components/SpotifyFooter';
 
 export default function ContactUsPage() {
