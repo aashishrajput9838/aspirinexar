@@ -21,7 +21,7 @@ export default function Component() {
         <div className="container mx-auto px-4 lg:px-6">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Image src="/InShot_20240426_153104300.jpg" alt="Aspirinexar Logo" width={50} height={50} className="rounded-lg my-0" />
+              <Image src="/new logo.jpg" alt="Aspirinexar Logo" width={50} height={50} className="rounded-full my-0" />
               
               <div className="flex space-x-6">
                 <Link href="#home" className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors">
@@ -88,34 +88,6 @@ export default function Component() {
                   Aspirinexar empowers businesses with cutting-edge technology solutions, innovative strategies, and
                   exceptional digital experiences that drive growth and success.
                 </p>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                >
-                  Start Your Journey
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-                <Button size="lg" variant="outline" className="border-gray-300 hover:bg-gray-50">
-                  Watch Demo
-                </Button>
-              </div>
-
-              <div className="flex items-center space-x-8 pt-8">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">500+</div>
-                  <div className="text-sm text-gray-600">Projects Completed</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">98%</div>
-                  <div className="text-sm text-gray-600">Client Satisfaction</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">24/7</div>
-                  <div className="text-sm text-gray-600">Support</div>
-                </div>
               </div>
             </div>
 

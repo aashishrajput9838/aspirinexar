@@ -1,9 +1,11 @@
 # Aspirinexar Company Website
 
-This repository contains the source code for the official Aspirinexar company website. The website showcases our digital innovation, services, and features our flagship auto-typing software, Typink.
+This repository contains the source code for the official Aspirinexar company website, now featuring a refreshed design and enhanced user experience. The website showcases our digital innovation, services, and features our flagship auto-typing software, Typink.
 
 ## Features
 
+-   **Modernized Authentication Pages:** Redesigned Login and Sign Up pages with a sleek, Spotify-inspired interface for a seamless user experience.
+-   **Integrated Custom Logo:** A new custom Aspirinexar logo is consistently integrated across all pages for enhanced branding.
 -   **Dynamic Homepage:** A modern, responsive landing page highlighting Aspirinexar's mission and capabilities.
 -   **Typink Showcase:** A dedicated section detailing the features, installation, and links for our auto-typing software, Typink.
 -   **Dynamic Copyright:** The footer automatically updates with the current year, along with a professional copyright notice.
