@@ -11,12 +11,14 @@ import {
   Home,
   Moon,
   Sun,
-  Star
+  Star,
+  ArrowRight
 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { Input } from '@/components/ui/input'
 
 const translations: Record<'en' | 'hi', Record<string, string>> = {
   en: {
@@ -72,6 +74,16 @@ const translations: Record<'en' | 'hi', Record<string, string>> = {
     allRights: "सभी अधिकार सुरक्षित। सभी ट्रेडमार्क उनके संबंधित मालिकों की संपत्ति हैं।",
   },
 };
+
+interface SearchResult {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  link: string;
+  tags: string[];
+  rating: number;
+  download: string;
+}
 
 export default function Component() {
   const [search, setSearch] = useState("")
@@ -170,16 +182,10 @@ export default function Component() {
     if (match) incrementPopular(match.title)
   }
 
-  const handleSuggestionClick = (s: any) => {
+  const handleSuggestionClick = (result: SearchResult) => {
+    setSearch(result.title)
     setShowSuggestions(false)
-    setSearch("")
-    // Add to recent searches (avoid duplicates, max 5)
-    setRecentSearches(prev => {
-      const filtered = prev.filter(item => item.toLowerCase() !== s.title.toLowerCase())
-      return [s.title, ...filtered].slice(0, 5)
-    })
-    incrementPopular(s.title)
-    router.push(s.link)
+    router.push(result.link)
   }
 
   const softwareCards = [

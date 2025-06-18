@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Star } from "lucide-react";
+import { ArrowLeft, Star, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 
 type Review = { rating: number; text: string; date: string };
