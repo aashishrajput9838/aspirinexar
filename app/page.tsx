@@ -3,16 +3,13 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import {
-  CheckCircle,
   Menu,
   Code,
-  Clock,
   Search,
   Home,
   Moon,
   Sun,
-  Star,
-  ArrowRight
+  Star
 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -85,11 +82,15 @@ interface SearchResult {
   download: string;
 }
 
+interface PopularSoftware extends SearchResult {
+  count: number;
+}
+
 export default function Component() {
   const [search, setSearch] = useState("")
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [recentSearches, setRecentSearches] = useState<string[]>([])
-  const [popular, setPopular] = useState<any[]>([])
+  const [popular, setPopular] = useState<SearchResult[]>([])
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1)
   const [darkMode, setDarkMode] = useState(false)
   const [language, setLanguage] = useState<'en' | 'hi'>('en')
@@ -124,7 +125,7 @@ export default function Component() {
         setPopular(sorted)
       }
     }
-  }, [search])
+  }, [search, softwareCards])
 
   // Reset highlighted index when suggestions or search changes
   useEffect(() => {
