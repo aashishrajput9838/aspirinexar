@@ -1,8 +1,51 @@
+"use client";
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Star } from "lucide-react";
+import { useState, useEffect } from "react";
+
+type Review = { rating: number; text: string; date: string };
 
 export default function NightLayer() {
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [rating, setRating] = useState(0);
+  const [hover, setHover] = useState(0);
+  const [text, setText] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("nightlayerReviews");
+      if (stored) setReviews(JSON.parse(stored));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("nightlayerReviews", JSON.stringify(reviews));
+    }
+  }, [reviews]);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (rating > 0 && text.trim()) {
+      setReviews((prev: Review[]) => [
+        { rating, text, date: new Date().toISOString() },
+        ...prev.slice(0, 9)
+      ]);
+      setRating(0);
+      setHover(0);
+      setText("");
+    }
+  };
+
+  const avgRating = reviews.length
+    ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+    : null;
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white p-8">
       <div className="max-w-4xl mx-auto">
@@ -146,6 +189,75 @@ pip install -r requirements.txt</code>
           >
             View on GitHub
           </a>
+        </div>
+
+        <div className="mt-8 bg-gray-800 rounded-lg p-6 shadow-xl">
+          <h2 className="text-2xl font-semibold mb-4 text-blue-400">User Reviews</h2>
+          <div className="mb-6">
+            <div className="flex items-center gap-2">
+              <span className="font-semibold">Average Rating:</span>
+              {avgRating !== null ? (
+                <>
+                  <span className="flex items-center">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} className={`h-5 w-5 ${i < Math.round(avgRating) ? 'text-yellow-400' : 'text-gray-300'}`} fill={i < Math.round(avgRating) ? '#facc15' : 'none'} />
+                    ))}
+                    <span className="ml-1 text-sm text-gray-600">{avgRating.toFixed(1)} ({reviews.length} reviews)</span>
+                  </span>
+                </>
+              ) : (
+                <span className="text-gray-500">No reviews yet</span>
+              )}
+            </div>
+          </div>
+          <form onSubmit={handleSubmit} className="mb-8 p-4 bg-gray-50 rounded-lg shadow">
+            <div className="mb-2 font-medium">Leave a review:</div>
+            <div className="flex items-center mb-2">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <button
+                  type="button"
+                  key={i}
+                  onClick={() => setRating(i + 1)}
+                  onMouseEnter={() => setHover(i + 1)}
+                  onMouseLeave={() => setHover(0)}
+                  className="focus:outline-none"
+                >
+                  <Star className={`h-7 w-7 ${i < (hover || rating) ? 'text-yellow-400' : 'text-gray-300'}`} fill={i < (hover || rating) ? '#facc15' : 'none'} />
+                </button>
+              ))}
+            </div>
+            <textarea
+              className="w-full border rounded p-2 mb-2"
+              rows={3}
+              placeholder="Write your review..."
+              value={text}
+              onChange={e => setText(e.target.value)}
+            />
+            <button
+              type="submit"
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+              disabled={rating === 0 || !text.trim()}
+            >
+              Submit Review
+            </button>
+          </form>
+          <div>
+            <h2 className="text-xl font-semibold mb-2">Recent Reviews</h2>
+            {reviews.length === 0 && <div className="text-gray-500">No reviews yet.</div>}
+            <ul className="space-y-4">
+              {reviews.map((r, idx) => (
+                <li key={idx} className="bg-white rounded-lg shadow p-4">
+                  <div className="flex items-center gap-2 mb-1">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} className={`h-4 w-4 ${i < r.rating ? 'text-yellow-400' : 'text-gray-300'}`} fill={i < r.rating ? '#facc15' : 'none'} />
+                    ))}
+                    <span className="ml-2 text-xs text-gray-400">{new Date(r.date).toLocaleDateString()}</span>
+                  </div>
+                  <div className="text-gray-800">{r.text}</div>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </div>

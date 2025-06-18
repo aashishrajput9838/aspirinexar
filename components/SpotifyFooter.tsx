@@ -35,10 +35,10 @@ export default function SpotifyFooter() {
           <div className="md:col-span-1">
             <h3 className="text-gray-400 font-bold mb-4">Useful Links</h3>
             <ul className="space-y-3">
-              <li><Link href="/contact" className="text-gray-300 hover:text-white transition-colors">Support</Link></li>
+              <li><Link href="/support" className="text-gray-300 hover:text-white transition-colors">Support</Link></li>
               <li><Link href="#" className="text-gray-300 hover:text-white transition-colors">Web Player</Link></li>
               <li><Link href="#" className="text-gray-300 hover:text-white transition-colors">Free Mobile App</Link></li>
-              <li><Link href="/contact" className="text-gray-300 hover:text-white transition-colors">Contact Aspirinexar</Link></li>
+              <li><Link href="/support" className="text-gray-300 hover:text-white transition-colors">Support Aspirinexar</Link></li>
             </ul>
           </div>
 
