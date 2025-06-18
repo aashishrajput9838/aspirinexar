@@ -42,7 +42,7 @@ export default function Component() {
               <Link href="#premium" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
                 Premium
               </Link>
-              <Link href="/contact" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+              <Link href="/support" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
                 Support
               </Link>
               <Link href="#download" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
