@@ -20,6 +20,7 @@ export default function Component() {
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [recentSearches, setRecentSearches] = useState<string[]>([])
   const [popular, setPopular] = useState<any[]>([])
+  const [highlightedIndex, setHighlightedIndex] = useState<number>(-1)
   const router = useRouter()
 
   // Load recent searches from localStorage on mount
@@ -52,6 +53,11 @@ export default function Component() {
       }
     }
   }, [search])
+
+  // Reset highlighted index when suggestions or search changes
+  useEffect(() => {
+    setHighlightedIndex(-1)
+  }, [search, showSuggestions])
 
   // Helper to increment popular count
   const incrementPopular = (title: string) => {
@@ -162,7 +168,29 @@ export default function Component() {
                     onFocus={() => setShowSuggestions(true)}
                     onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
                     onKeyDown={e => {
-                      if (e.key === "Enter" && search.trim()) {
+                      if (showSuggestions && search.trim() && suggestions.length > 0) {
+                        if (e.key === "ArrowDown") {
+                          e.preventDefault()
+                          setHighlightedIndex(i => (i + 1) % suggestions.length)
+                        } else if (e.key === "ArrowUp") {
+                          e.preventDefault()
+                          setHighlightedIndex(i => (i - 1 + suggestions.length) % suggestions.length)
+                        } else if (e.key === "Enter") {
+                          if (highlightedIndex >= 0 && highlightedIndex < suggestions.length) {
+                            handleSuggestionClick(suggestions[highlightedIndex])
+                          } else if (search.trim()) {
+                            // Add to recent searches (avoid duplicates, max 5)
+                            setRecentSearches(prev => {
+                              const filtered = prev.filter(item => item.toLowerCase() !== search.trim().toLowerCase())
+                              return [search.trim(), ...filtered].slice(0, 5)
+                            })
+                            setShowSuggestions(false)
+                            // Increment popular count if matches a software
+                            const match = softwareCards.find(card => card.title.toLowerCase() === search.trim().toLowerCase())
+                            if (match) incrementPopular(match.title)
+                          }
+                        }
+                      } else if (e.key === "Enter" && search.trim()) {
                         // Add to recent searches (avoid duplicates, max 5)
                         setRecentSearches(prev => {
                           const filtered = prev.filter(item => item.toLowerCase() !== search.trim().toLowerCase())
@@ -194,11 +222,12 @@ export default function Component() {
                   {showSuggestions && search.trim() && (
                     <div className="absolute left-0 top-12 w-full bg-white rounded-b-lg shadow-lg z-50">
                       {suggestions.length > 0 ? (
-                        suggestions.map(s => (
+                        suggestions.map((s, idx) => (
                           <div
                             key={s.title}
-                            className="flex items-start px-4 py-2 text-black hover:bg-blue-100 cursor-pointer"
+                            className={`flex items-start px-4 py-2 text-black hover:bg-blue-100 cursor-pointer ${highlightedIndex === idx ? 'bg-blue-100' : ''}`}
                             onMouseDown={() => handleSuggestionClick(s)}
+                            aria-selected={highlightedIndex === idx}
                           >
                             <span className="mt-0.5">{s.icon}</span>
                             <div>
