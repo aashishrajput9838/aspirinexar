@@ -520,27 +520,23 @@ export default function Component() {
       </section>
 
       {/* Popular Software Section */}
-      {popular.length > 0 && (
-        <section className="py-8">
-          <div className="container mx-auto px-4 lg:px-6">
-            <div className="text-center space-y-2 mb-4">
-              <Badge className="bg-purple-100 text-purple-700">{t.popular}</Badge>
-            </div>
-            <h3 className="text-2xl lg:text-3xl font-bold">{t.trending}</h3>
-            <ul className="max-w-md mx-auto divide-y divide-gray-200 bg-white/70 rounded-xl shadow-sm">
-              {popular.map(card => (
-                <li key={card.title} className="flex items-center gap-4 px-4 py-3 hover:bg-blue-50 transition cursor-pointer" onClick={() => router.push(card.link)}>
-                  <span>{card.icon}</span>
-                  <div className="flex-1">
-                    <div className="font-semibold text-base text-gray-900">{card.title}</div>
-                  </div>
-                  <span className="text-xs bg-gradient-to-r from-blue-500 to-purple-500 text-white px-2 py-0.5 rounded-full">{t.trending}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-      )}
+      <div className="mt-16 flex flex-col items-center">
+        <div className="flex items-center gap-2 mb-6">
+          <Badge className="bg-purple-100 text-purple-700">{t.popular}</Badge>
+          <h3 className="text-2xl lg:text-3xl font-bold">{t.popular}</h3>
+        </div>
+        <ul className="space-y-8 w-full max-w-3xl">
+          {popular.map(card => (
+            <li key={card.title} className="flex items-center gap-8 px-4 py-3 hover:bg-blue-50 transition cursor-pointer rounded-xl" onClick={() => router.push(card.link)}>
+              <span className="flex-shrink-0">{card.icon}</span>
+              <div>
+                <div className="font-semibold text-xl text-gray-900">{card.title}</div>
+                <div className="text-base text-gray-500">{card.description}</div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       {/* Footer */}
       <footer className="py-8 bg-white dark:bg-gray-950 border-t dark:border-gray-800">
