@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -7,16 +8,251 @@ import {
   Code,
   Clock,
   Search,
-  Home
+  Home,
+  Moon,
+  Sun,
+  Star
 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+
+const translations: Record<'en' | 'hi', Record<string, string>> = {
+  en: {
+    home: "Home",
+    premium: "Premium",
+    support: "Support",
+    download: "Download",
+    installApp: "Install App",
+    signup: "Sign up",
+    login: "Log In",
+    searchPlaceholder: "Looking for a software? Start typing...",
+    innovation: "Innovation Meets Excellence",
+    transform: "Transform Your",
+    digitalFuture: "Digital Future",
+    heroDesc: "Aspirinexar empowers businesses with cutting-edge technology solutions, innovative strategies, and exceptional digital experiences that drive growth and success.",
+    ourSoftware: "Our Software",
+    softwareSolutions: "Software Solutions",
+    discover: "Discover our cutting-edge software products designed to transform your digital experience.",
+    trending: "Trending Now",
+    popular: "Popular Software",
+    recentSearches: "Recent Searches",
+    noMatches: "No matches found",
+    learnMore: "Learn More",
+    downloadBtn: "Download",
+    supportAspirinexar: "Support Aspirinexar",
+    madeWith: "Made with ❤️ by AASHISH RAJPUT",
+    allRights: "All rights reserved. All trademarks are the property of their respective owners.",
+  },
+  hi: {
+    home: "होम",
+    premium: "प्रीमियम",
+    support: "सहायता",
+    download: "डाउनलोड",
+    installApp: "ऐप इंस्टॉल करें",
+    signup: "साइन अप",
+    login: "लॉग इन",
+    searchPlaceholder: "सॉफ्टवेयर खोजें... टाइप करना शुरू करें...",
+    innovation: "नवाचार उत्कृष्टता से मिलता है",
+    transform: "अपना",
+    digitalFuture: "डिजिटल भविष्य बदलें",
+    heroDesc: "Aspirinexar व्यवसायों को अत्याधुनिक तकनीकी समाधानों, नवाचार रणनीतियों और उत्कृष्ट डिजिटल अनुभवों के साथ सशक्त बनाता है।",
+    ourSoftware: "हमारा सॉफ्टवेयर",
+    softwareSolutions: "सॉफ्टवेयर समाधान",
+    discover: "हमारे अत्याधुनिक सॉफ्टवेयर उत्पादों की खोज करें जो आपके डिजिटल अनुभव को बदलने के लिए डिज़ाइन किए गए हैं।",
+    trending: "ट्रेंडिंग",
+    popular: "लोकप्रिय सॉफ्टवेयर",
+    recentSearches: "हाल की खोजें",
+    noMatches: "कोई मेल नहीं मिला",
+    learnMore: "और जानें",
+    downloadBtn: "डाउनलोड",
+    supportAspirinexar: "Aspirinexar सहायता",
+    madeWith: "❤️ के साथ बनाया गया - AASHISH RAJPUT",
+    allRights: "सभी अधिकार सुरक्षित। सभी ट्रेडमार्क उनके संबंधित मालिकों की संपत्ति हैं।",
+  },
+};
 
 export default function Component() {
+  const [search, setSearch] = useState("")
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [recentSearches, setRecentSearches] = useState<string[]>([])
+  const [popular, setPopular] = useState<any[]>([])
+  const [highlightedIndex, setHighlightedIndex] = useState<number>(-1)
+  const [darkMode, setDarkMode] = useState(false)
+  const [language, setLanguage] = useState<'en' | 'hi'>('en')
+  const router = useRouter()
+
+  // Load recent searches from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("recentSearches")
+      if (stored) setRecentSearches(JSON.parse(stored))
+    }
+  }, [])
+
+  // Save recent searches to localStorage when they change
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("recentSearches", JSON.stringify(recentSearches))
+    }
+  }, [recentSearches])
+
+  // Load popular software counts from localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("popularSoftware")
+      if (stored) {
+        const counts = JSON.parse(stored)
+        // Sort by count and get top 3
+        const sorted = softwareCards
+          .map(card => ({ ...card, count: counts[card.title] || 0 }))
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 3)
+        setPopular(sorted)
+      }
+    }
+  }, [search])
+
+  // Reset highlighted index when suggestions or search changes
+  useEffect(() => {
+    setHighlightedIndex(-1)
+  }, [search, showSuggestions])
+
+  // Load dark mode preference from localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("darkMode");
+      if (stored) setDarkMode(stored === "true");
+    }
+  }, []);
+
+  // Save dark mode preference to localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("darkMode", darkMode ? "true" : "false");
+    }
+  }, [darkMode]);
+
+  // Load language preference from localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("language");
+      if (stored) setLanguage(stored as 'en' | 'hi');
+    }
+  }, []);
+
+  // Save language preference to localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("language", language);
+    }
+  }, [language]);
+
+  // Toggle dark mode
+  const toggleDarkMode = () => setDarkMode(d => !d);
+
+  // Helper to increment popular count
+  const incrementPopular = (title: string) => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("popularSoftware")
+      const counts = stored ? JSON.parse(stored) : {}
+      counts[title] = (counts[title] || 0) + 1
+      localStorage.setItem("popularSoftware", JSON.stringify(counts))
+    }
+  }
+
+  const handleSearchSelect = (term: string) => {
+    setSearch(term)
+    setShowSuggestions(true)
+    // Increment popular count if matches a software
+    const match = softwareCards.find(card => card.title.toLowerCase() === term.toLowerCase())
+    if (match) incrementPopular(match.title)
+  }
+
+  const handleSuggestionClick = (s: any) => {
+    setShowSuggestions(false)
+    setSearch("")
+    // Add to recent searches (avoid duplicates, max 5)
+    setRecentSearches(prev => {
+      const filtered = prev.filter(item => item.toLowerCase() !== s.title.toLowerCase())
+      return [s.title, ...filtered].slice(0, 5)
+    })
+    incrementPopular(s.title)
+    router.push(s.link)
+  }
+
+  const softwareCards = [
+    {
+      title: "Typink",
+      link: "/typink",
+      description: "A powerful auto-typing tool with a modern UI.",
+      icon: (
+        <Image
+          src="/images/Typink-logo.png"
+          alt="Typink Logo"
+          width={95}
+          height={95}
+          className="rounded-full mr-2 border border-gray-200 bg-white"
+        />
+      ),
+      tags: ["auto-typing", "Python", "CustomTkinter", "PyAutoGUI", "automation", "typing"],
+      rating: 4.8,
+      download: "https://github.com/aashishrajput9838/typink/releases",
+    },
+    {
+      title: "GlassTick",
+      link: "/floating-clock",
+      description: "A minimal, transparent floating clock widget.",
+      icon: (
+        <Image
+          src="/images/GlassStick.png"
+          alt="GlassTick Logo"
+          width={95}
+          height={95}
+          className="rounded-full mr-2 border border-gray-200 bg-white"
+        />
+      ),
+      tags: ["clock", "floating", "transparent", "CustomTkinter", "Python", "widget", "windows"],
+      rating: 4.5,
+      download: "https://github.com/aashishrajput9838/glasstick/releases",
+    },
+    {
+      title: "NightLayer",
+      link: "/nightlayer",
+      description: "A screen overlay tool to reduce eye strain.",
+      icon: (
+        <Image
+          src="/images/nightLayer.png"
+          alt="NightLayer Logo"
+          width={95}
+          height={95}
+          className="rounded-full mr-2 border border-gray-200 bg-white"
+        />
+      ),
+      tags: ["overlay", "screen", "eye strain", "PyWin32", "Python", "windows", "opacity"],
+      rating: 4.7,
+      download: "https://github.com/aashishrajput9838/nightlayer/releases",
+    },
+  ]
+
+  const suggestions = search.trim()
+    ? softwareCards.filter(card => {
+        const q = search.toLowerCase();
+        return (
+          card.title.toLowerCase().includes(q) ||
+          card.description.toLowerCase().includes(q) ||
+          (card.tags && card.tags.some(tag => tag.toLowerCase().includes(q)))
+        );
+      })
+    : []
+
+  const t = translations[language];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+    <div className={`min-h-screen ${darkMode ? 'dark' : ''} bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-950 dark:to-blue-950`}>
       {/* Header */}
-      <header className="sticky top-0 z-50 w-full bg-black text-white py-3">
+      <header className="sticky top-0 z-50 w-full bg-black dark:bg-gray-950 text-white py-3">
         <div className="container mx-auto px-4 lg:px-6">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -25,40 +261,172 @@ export default function Component() {
               <div className="flex space-x-6">
                 <Link href="#home" className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors">
                   <Home className="h-5 w-5" />
-                  <span className="text-sm font-medium">Home</span>
+                  <span className="text-sm font-medium">{t.home}</span>
                 </Link>
                 <div className="relative flex items-center bg-gray-800 rounded-full pl-3 pr-2 py-2">
                   <Search className="h-5 w-5 text-gray-400 mr-2" />
                   <input 
                     type="text" 
-                    placeholder="What do you want to play?"
+                    placeholder={t.searchPlaceholder}
                     className="bg-transparent text-white placeholder-gray-400 focus:outline-none w-64"
+                    value={search}
+                    onChange={e => {
+                      setSearch(e.target.value)
+                      setShowSuggestions(true)
+                    }}
+                    onFocus={() => setShowSuggestions(true)}
+                    onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+                    onKeyDown={e => {
+                      if (showSuggestions && search.trim() && suggestions.length > 0) {
+                        if (e.key === "ArrowDown") {
+                          e.preventDefault()
+                          setHighlightedIndex(i => (i + 1) % suggestions.length)
+                        } else if (e.key === "ArrowUp") {
+                          e.preventDefault()
+                          setHighlightedIndex(i => (i - 1 + suggestions.length) % suggestions.length)
+                        } else if (e.key === "Enter") {
+                          if (highlightedIndex >= 0 && highlightedIndex < suggestions.length) {
+                            handleSuggestionClick(suggestions[highlightedIndex])
+                          } else if (search.trim()) {
+                            // Add to recent searches (avoid duplicates, max 5)
+                            setRecentSearches(prev => {
+                              const filtered = prev.filter(item => item.toLowerCase() !== search.trim().toLowerCase())
+                              return [search.trim(), ...filtered].slice(0, 5)
+                            })
+                            setShowSuggestions(false)
+                            // Increment popular count if matches a software
+                            const match = softwareCards.find(card => card.title.toLowerCase() === search.trim().toLowerCase())
+                            if (match) incrementPopular(match.title)
+                          }
+                        }
+                      } else if (e.key === "Enter" && search.trim()) {
+                        // Add to recent searches (avoid duplicates, max 5)
+                        setRecentSearches(prev => {
+                          const filtered = prev.filter(item => item.toLowerCase() !== search.trim().toLowerCase())
+                          return [search.trim(), ...filtered].slice(0, 5)
+                        })
+                        setShowSuggestions(false)
+                        // Increment popular count if matches a software
+                        const match = softwareCards.find(card => card.title.toLowerCase() === search.trim().toLowerCase())
+                        if (match) incrementPopular(match.title)
+                      }
+                    }}
                   />
+                  {/* Recent Searches Dropdown */}
+                  {showSuggestions && !search.trim() && recentSearches.length > 0 && (
+                    <div className="absolute left-0 top-12 w-full bg-white rounded-b-lg shadow-lg z-50">
+                      <div className="px-4 py-2 text-xs text-gray-500">{t.recentSearches}</div>
+                      {recentSearches.map(term => (
+                        <div
+                          key={term}
+                          className="px-4 py-2 text-black hover:bg-blue-100 cursor-pointer"
+                          onMouseDown={() => handleSearchSelect(term)}
+                        >
+                          {term}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {/* Suggestions Dropdown */}
+                  {showSuggestions && search.trim() && (
+                    <div
+                      className={`absolute left-0 top-12 w-full bg-white rounded-b-lg shadow-lg z-50 transition-all duration-300 transform
+                        ${showSuggestions ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'}`}
+                      style={{ willChange: 'opacity, transform' }}
+                    >
+                      {suggestions.length > 0 ? (
+                        suggestions.map((s, idx) => (
+                          <div
+                            key={s.title}
+                            className={`flex items-start px-4 py-2 text-black hover:bg-blue-100 cursor-pointer ${highlightedIndex === idx ? 'bg-blue-100' : ''}`}
+                            onMouseDown={() => handleSuggestionClick(s)}
+                            aria-selected={highlightedIndex === idx}
+                          >
+                            <span className="mt-0.5">{s.icon}</span>
+                            <div>
+                              <div className="font-medium flex items-center gap-2">{s.title}
+                                <span className="flex items-center">
+                                  {Array.from({ length: 5 }).map((_, i) => (
+                                    <Star key={i} className={`h-4 w-4 ${i < Math.round(s.rating) ? 'text-yellow-400' : 'text-gray-300'}`} fill={i < Math.round(s.rating) ? '#facc15' : 'none'} />
+                                  ))}
+                                  <span className="ml-1 text-xs text-gray-500">{s.rating.toFixed(1)}</span>
+                                </span>
+                              </div>
+                              <div className="text-xs text-gray-500">{s.description}</div>
+                              <div className="flex gap-2 mt-2">
+                                <button
+                                  className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs transition"
+                                  onMouseDown={e => {
+                                    e.preventDefault();
+                                    router.push(s.link);
+                                  }}
+                                >
+                                  {t.learnMore}
+                                </button>
+                                {s.download && (
+                                  <a
+                                    href={s.download}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-xs transition"
+                                    onMouseDown={e => e.stopPropagation()}
+                                  >
+                                    {t.downloadBtn}
+                                  </a>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="px-4 py-2 text-gray-500">{t.noMatches}</div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
             <nav className="hidden md:flex items-center space-x-6">
+              <Link href="#home" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+                {t.home}
+              </Link>
               <Link href="#premium" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
-                Premium
+                {t.premium}
               </Link>
               <Link href="/support" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
-                Support
+                {t.support}
               </Link>
               <Link href="#download" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
-                Download
+                {t.download}
               </Link>
               <Link href="#install-app" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
-                Install App
+                {t.installApp}
               </Link>
               <Link href="/signup" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
-                Sign up
+                {t.signup}
               </Link>
               <Link href="/login">
                 <Button className="bg-white text-black font-bold px-5 py-2 rounded-full hover:scale-105 transition-transform">
-                  Log In
+                  {t.login}
                 </Button>
               </Link>
+              <button
+                onClick={toggleDarkMode}
+                className="ml-4 p-2 rounded-full bg-gray-800 dark:bg-gray-700 hover:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
+                aria-label="Toggle dark mode"
+              >
+                {darkMode ? <Sun className="h-5 w-5 text-yellow-400" /> : <Moon className="h-5 w-5 text-gray-300" />}
+              </button>
+              <select
+                value={language}
+                onChange={e => setLanguage(e.target.value as 'en' | 'hi')}
+                className="ml-4 p-2 rounded bg-gray-200 text-black text-xs"
+                aria-label="Select language"
+              >
+                <option value="en">EN</option>
+                <option value="hi">हिंदी</option>
+              </select>
             </nav>
 
             <Button variant="ghost" size="icon" className="md:hidden">
@@ -75,17 +443,15 @@ export default function Component() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
               <div className="space-y-4">
-                <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200">🚀 Innovation Meets Excellence</Badge>
+                <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200">🚀 {t.innovation}</Badge>
                 <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
-                  Transform Your
+                  {t.transform}
                   <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    {" "}
-                    Digital Future
+                    {" "}{t.digitalFuture}
                   </span>
                 </h1>
                 <p className="text-xl text-gray-600 leading-relaxed">
-                  Aspirinexar empowers businesses with cutting-edge technology solutions, innovative strategies, and
-                  exceptional digital experiences that drive growth and success.
+                  {t.heroDesc}
                 </p>
               </div>
             </div>
@@ -102,161 +468,81 @@ export default function Component() {
       </section>
 
       {/* Software Showcase Section */}
-      <section id="software" className="py-20 bg-gradient-to-b from-white to-blue-50">
+      <section id="software" className="py-20 bg-gradient-to-b from-white to-blue-50 dark:from-gray-900 dark:to-blue-950">
         <div className="container mx-auto px-4 lg:px-6">
           <div className="text-center space-y-4 mb-16">
-            <Badge className="bg-blue-100 text-blue-700">Our Software</Badge>
+            <Badge className="bg-blue-100 text-blue-700">{t.ourSoftware}</Badge>
             <h2 className="text-3xl lg:text-5xl font-bold">
               Innovative
               <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                {" "}
-                Software Solutions
+                {" "}{t.softwareSolutions}
               </span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Discover our cutting-edge software products designed to transform your digital experience.
+              {t.discover}
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg hover:-translate-y-2">
+            {softwareCards.map(card => (
+              <Card key={card.title} className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg hover:-translate-y-2">
               <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mb-4">
-                  <Code className="h-6 w-6 text-white" />
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                    {card.icon}
                 </div>
-                <CardTitle className="text-xl">Typink</CardTitle>
-                <CardDescription>
-                  A powerful auto-typing tool with a modern UI that helps you automate text input with precision and control.
-                </CardDescription>
+                  <CardTitle className="text-xl flex items-center gap-2">{card.title}
+                    <span className="flex items-center">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star key={i} className={`h-4 w-4 ${i < Math.round(card.rating) ? 'text-yellow-400' : 'text-gray-300'}`} fill={i < Math.round(card.rating) ? '#facc15' : 'none'} />
+                      ))}
+                      <span className="ml-1 text-xs text-gray-500">{card.rating.toFixed(1)}</span>
+                    </span>
+                  </CardTitle>
+                  <CardDescription>{card.description}</CardDescription>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Precise Speed Control (1ms increments)
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Floating Control Window
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Pause/Resume with Countdown
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Real-time Progress Tracking
-                  </li>
-                </ul>
-                <div className="mt-4 space-y-2">
-                  <Badge className="bg-blue-100 text-blue-700">Python</Badge>
-                  <Badge className="bg-purple-100 text-purple-700">CustomTkinter</Badge>
-                  <Badge className="bg-green-100 text-green-700">PyAutoGUI</Badge>
-                </div>
-                <Link href="/typink">
+                  <Link href={card.link}>
                   <Button className="w-full mt-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                    Learn More
+                      {t.learnMore}
                   </Button>
                 </Link>
               </CardContent>
             </Card>
-
-            <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg hover:-translate-y-2">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mb-4">
-                  <Clock className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle className="text-xl">GlassTick</CardTitle>
-                <CardDescription>
-                  A minimal, transparent floating clock widget that stays on top of other windows with customizable settings.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Always on Top
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Transparent Background
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Draggable Interface
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Customizable Settings
-                  </li>
-                </ul>
-                <div className="mt-4 space-y-2">
-                  <Badge className="bg-blue-100 text-blue-700">Python</Badge>
-                  <Badge className="bg-purple-100 text-purple-700">CustomTkinter</Badge>
-                  <Badge className="bg-green-100 text-green-700">Windows</Badge>
-                </div>
-                <Link href="/floating-clock">
-                  <Button className="w-full mt-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                    Learn More
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-
-            <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg hover:-translate-y-2">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center mb-4">
-                  <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                  </svg>
-                </div>
-                <CardTitle className="text-xl">NightLayer</CardTitle>
-                <CardDescription>
-                  A screen overlay tool that creates a semi-transparent black layer to reduce eye strain, with customizable opacity and keyboard shortcuts.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Toggle with Ctrl + Space
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Adjustable Opacity
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    System Tray Integration
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Minimal Interface
-                  </li>
-                </ul>
-                <div className="mt-4 space-y-2">
-                  <Badge className="bg-blue-100 text-blue-700">Python</Badge>
-                  <Badge className="bg-purple-100 text-purple-700">PyWin32</Badge>
-                  <Badge className="bg-green-100 text-green-700">Windows</Badge>
-                </div>
-                <Link href="/nightlayer">
-                  <Button className="w-full mt-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                    Learn More
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
+            ))}
           </div>
         </div>
       </section>
 
+      {/* Popular Software Section */}
+      {popular.length > 0 && (
+        <section className="py-8">
+          <div className="container mx-auto px-4 lg:px-6">
+            <div className="text-center space-y-2 mb-4">
+              <Badge className="bg-purple-100 text-purple-700">{t.popular}</Badge>
+            </div>
+            <h3 className="text-2xl lg:text-3xl font-bold">{t.trending}</h3>
+            <ul className="max-w-md mx-auto divide-y divide-gray-200 bg-white/70 rounded-xl shadow-sm">
+              {popular.map(card => (
+                <li key={card.title} className="flex items-center gap-4 px-4 py-3 hover:bg-blue-50 transition cursor-pointer" onClick={() => router.push(card.link)}>
+                  <span>{card.icon}</span>
+                  <div className="flex-1">
+                    <div className="font-semibold text-base text-gray-900">{card.title}</div>
+                  </div>
+                  <span className="text-xs bg-gradient-to-r from-blue-500 to-purple-500 text-white px-2 py-0.5 rounded-full">{t.trending}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
       {/* Footer */}
-      <footer className="py-8 bg-white border-t">
+      <footer className="py-8 bg-white dark:bg-gray-950 border-t dark:border-gray-800">
         <div className="container mx-auto px-4 lg:px-6">
           <div className="text-center text-sm text-gray-600">
-            © {new Date().getFullYear()} Aspirinexar Inc. All rights reserved. All trademarks are the property of their respective owners.
+            © {new Date().getFullYear()} Aspirinexar Inc. {t.allRights}
             <br />
-            Made with ❤️ by AASHISH RAJPUT
+            {t.madeWith}
           </div>
         </div>
       </footer>
