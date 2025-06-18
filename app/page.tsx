@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -11,8 +12,128 @@ import {
 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 
 export default function Component() {
+  const [search, setSearch] = useState("")
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [recentSearches, setRecentSearches] = useState<string[]>([])
+  const [popular, setPopular] = useState<any[]>([])
+  const router = useRouter()
+
+  // Load recent searches from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("recentSearches")
+      if (stored) setRecentSearches(JSON.parse(stored))
+    }
+  }, [])
+
+  // Save recent searches to localStorage when they change
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("recentSearches", JSON.stringify(recentSearches))
+    }
+  }, [recentSearches])
+
+  // Load popular software counts from localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("popularSoftware")
+      if (stored) {
+        const counts = JSON.parse(stored)
+        // Sort by count and get top 3
+        const sorted = softwareCards
+          .map(card => ({ ...card, count: counts[card.title] || 0 }))
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 3)
+        setPopular(sorted)
+      }
+    }
+  }, [search])
+
+  // Helper to increment popular count
+  const incrementPopular = (title: string) => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("popularSoftware")
+      const counts = stored ? JSON.parse(stored) : {}
+      counts[title] = (counts[title] || 0) + 1
+      localStorage.setItem("popularSoftware", JSON.stringify(counts))
+    }
+  }
+
+  const handleSearchSelect = (term: string) => {
+    setSearch(term)
+    setShowSuggestions(true)
+    // Increment popular count if matches a software
+    const match = softwareCards.find(card => card.title.toLowerCase() === term.toLowerCase())
+    if (match) incrementPopular(match.title)
+  }
+
+  const handleSuggestionClick = (s: any) => {
+    setShowSuggestions(false)
+    setSearch("")
+    // Add to recent searches (avoid duplicates, max 5)
+    setRecentSearches(prev => {
+      const filtered = prev.filter(item => item.toLowerCase() !== s.title.toLowerCase())
+      return [s.title, ...filtered].slice(0, 5)
+    })
+    incrementPopular(s.title)
+    router.push(s.link)
+  }
+
+  const softwareCards = [
+    {
+      title: "Typink",
+      link: "/typink",
+      description: "A powerful auto-typing tool with a modern UI.",
+      icon: (
+        <Image
+          src="/images/Typink-logo.png"
+          alt="Typink Logo"
+          width={95}
+          height={95}
+          className="rounded-full mr-2 border border-gray-200 bg-white"
+        />
+      ),
+    },
+    {
+      title: "GlassTick",
+      link: "/floating-clock",
+      description: "A minimal, transparent floating clock widget.",
+      icon: (
+        <Image
+          src="/images/GlassStick.png"
+          alt="GlassTick Logo"
+          width={95}
+          height={95}
+          className="rounded-full mr-2 border border-gray-200 bg-white"
+        />
+      ),
+    },
+    {
+      title: "NightLayer",
+      link: "/nightlayer",
+      description: "A screen overlay tool to reduce eye strain.",
+      icon: (
+        <Image
+          src="/images/nightLayer.png"
+          alt="NightLayer Logo"
+          width={95}
+          height={95}
+          className="rounded-full mr-2 border border-gray-200 bg-white"
+        />
+      ),
+    },
+  ]
+
+  const suggestions = search.trim()
+    ? softwareCards.filter(card =>
+        card.title.toLowerCase().includes(search.toLowerCase())
+      )
+    : []
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       {/* Header */}
@@ -31,9 +152,66 @@ export default function Component() {
                   <Search className="h-5 w-5 text-gray-400 mr-2" />
                   <input 
                     type="text" 
-                    placeholder="What do you want to play?"
+                    placeholder="Looking for a software? Start typing..."
                     className="bg-transparent text-white placeholder-gray-400 focus:outline-none w-64"
+                    value={search}
+                    onChange={e => {
+                      setSearch(e.target.value)
+                      setShowSuggestions(true)
+                    }}
+                    onFocus={() => setShowSuggestions(true)}
+                    onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+                    onKeyDown={e => {
+                      if (e.key === "Enter" && search.trim()) {
+                        // Add to recent searches (avoid duplicates, max 5)
+                        setRecentSearches(prev => {
+                          const filtered = prev.filter(item => item.toLowerCase() !== search.trim().toLowerCase())
+                          return [search.trim(), ...filtered].slice(0, 5)
+                        })
+                        setShowSuggestions(false)
+                        // Increment popular count if matches a software
+                        const match = softwareCards.find(card => card.title.toLowerCase() === search.trim().toLowerCase())
+                        if (match) incrementPopular(match.title)
+                      }
+                    }}
                   />
+                  {/* Recent Searches Dropdown */}
+                  {showSuggestions && !search.trim() && recentSearches.length > 0 && (
+                    <div className="absolute left-0 top-12 w-full bg-white rounded-b-lg shadow-lg z-50">
+                      <div className="px-4 py-2 text-xs text-gray-500">Recent Searches</div>
+                      {recentSearches.map(term => (
+                        <div
+                          key={term}
+                          className="px-4 py-2 text-black hover:bg-blue-100 cursor-pointer"
+                          onMouseDown={() => handleSearchSelect(term)}
+                        >
+                          {term}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {/* Suggestions Dropdown */}
+                  {showSuggestions && search.trim() && (
+                    <div className="absolute left-0 top-12 w-full bg-white rounded-b-lg shadow-lg z-50">
+                      {suggestions.length > 0 ? (
+                        suggestions.map(s => (
+                          <div
+                            key={s.title}
+                            className="flex items-start px-4 py-2 text-black hover:bg-blue-100 cursor-pointer"
+                            onMouseDown={() => handleSuggestionClick(s)}
+                          >
+                            <span className="mt-0.5">{s.icon}</span>
+                            <div>
+                              <div className="font-medium">{s.title}</div>
+                              <div className="text-xs text-gray-500">{s.description}</div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="px-4 py-2 text-gray-500">No matches found</div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -119,136 +297,49 @@ export default function Component() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg hover:-translate-y-2">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mb-4">
-                  <Code className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle className="text-xl">Typink</CardTitle>
-                <CardDescription>
-                  A powerful auto-typing tool with a modern UI that helps you automate text input with precision and control.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Precise Speed Control (1ms increments)
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Floating Control Window
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Pause/Resume with Countdown
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Real-time Progress Tracking
-                  </li>
-                </ul>
-                <div className="mt-4 space-y-2">
-                  <Badge className="bg-blue-100 text-blue-700">Python</Badge>
-                  <Badge className="bg-purple-100 text-purple-700">CustomTkinter</Badge>
-                  <Badge className="bg-green-100 text-green-700">PyAutoGUI</Badge>
-                </div>
-                <Link href="/typink">
-                  <Button className="w-full mt-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                    Learn More
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-
-            <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg hover:-translate-y-2">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mb-4">
-                  <Clock className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle className="text-xl">GlassTick</CardTitle>
-                <CardDescription>
-                  A minimal, transparent floating clock widget that stays on top of other windows with customizable settings.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Always on Top
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Transparent Background
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Draggable Interface
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Customizable Settings
-                  </li>
-                </ul>
-                <div className="mt-4 space-y-2">
-                  <Badge className="bg-blue-100 text-blue-700">Python</Badge>
-                  <Badge className="bg-purple-100 text-purple-700">CustomTkinter</Badge>
-                  <Badge className="bg-green-100 text-green-700">Windows</Badge>
-                </div>
-                <Link href="/floating-clock">
-                  <Button className="w-full mt-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                    Learn More
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-
-            <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg hover:-translate-y-2">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center mb-4">
-                  <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                  </svg>
-                </div>
-                <CardTitle className="text-xl">NightLayer</CardTitle>
-                <CardDescription>
-                  A screen overlay tool that creates a semi-transparent black layer to reduce eye strain, with customizable opacity and keyboard shortcuts.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Toggle with Ctrl + Space
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Adjustable Opacity
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    System Tray Integration
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Minimal Interface
-                  </li>
-                </ul>
-                <div className="mt-4 space-y-2">
-                  <Badge className="bg-blue-100 text-blue-700">Python</Badge>
-                  <Badge className="bg-purple-100 text-purple-700">PyWin32</Badge>
-                  <Badge className="bg-green-100 text-green-700">Windows</Badge>
-                </div>
-                <Link href="/nightlayer">
-                  <Button className="w-full mt-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                    Learn More
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
+            {softwareCards.map(card => (
+              <Card key={card.title} className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg hover:-translate-y-2">
+                <CardHeader>
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                    {card.icon}
+                  </div>
+                  <CardTitle className="text-xl">{card.title}</CardTitle>
+                  <CardDescription>{card.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Link href={card.link}>
+                    <Button className="w-full mt-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                      Learn More
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
+
+      {/* Popular Software Section */}
+      {popular.length > 0 && (
+        <section className="py-8">
+          <div className="container mx-auto px-4 lg:px-6">
+            <div className="text-center space-y-2 mb-4">
+              <Badge className="bg-purple-100 text-purple-700">Trending Now</Badge>
+            </div>
+            <ul className="max-w-md mx-auto divide-y divide-gray-200 bg-white/70 rounded-xl shadow-sm">
+              {popular.map(card => (
+                <li key={card.title} className="flex items-center gap-4 px-4 py-3 hover:bg-blue-50 transition cursor-pointer" onClick={() => router.push(card.link)}>
+                  <span>{card.icon}</span>
+                  <div className="flex-1">
+                    <div className="font-semibold text-base text-gray-900">{card.title}</div>
+                  </div>
+                  <span className="text-xs bg-gradient-to-r from-blue-500 to-purple-500 text-white px-2 py-0.5 rounded-full">Trending</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       {/* Footer */}
       <footer className="py-8 bg-white border-t">
