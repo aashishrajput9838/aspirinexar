@@ -15,7 +15,6 @@ import Image from "next/image"
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { Input } from '@/components/ui/input'
 
 const translations: Record<'en' | 'hi', Record<string, string>> = {
   en: {
@@ -86,11 +85,65 @@ interface PopularSoftware extends SearchResult {
   count: number;
 }
 
+const softwareCards: SearchResult[] = [
+  {
+    title: "Typink",
+    link: "/typink",
+    description: "A powerful auto-typing tool with a modern UI.",
+    icon: (
+      <Image
+        src="/images/Typink-logo.png"
+        alt="Typink Logo"
+        width={95}
+        height={95}
+        className="rounded-full"
+      />
+    ),
+    tags: ["Productivity", "Automation"],
+    rating: 4.8,
+    download: "1.2M"
+  },
+  {
+    title: "GlassTick",
+    link: "/floating-clock",
+    description: "A minimal, transparent floating clock widget.",
+    icon: (
+      <Image
+        src="/images/GlassStick.png"
+        alt="GlassTick Logo"
+        width={95}
+        height={95}
+        className="rounded-full mr-2 border border-gray-200 bg-white"
+      />
+    ),
+    tags: ["clock", "floating", "transparent", "CustomTkinter", "Python", "widget", "windows"],
+    rating: 4.5,
+    download: "https://github.com/aashishrajput9838/glasstick/releases",
+  },
+  {
+    title: "NightLayer",
+    link: "/nightlayer",
+    description: "A screen overlay tool to reduce eye strain.",
+    icon: (
+      <Image
+        src="/images/nightLayer.png"
+        alt="NightLayer Logo"
+        width={95}
+        height={95}
+        className="rounded-full mr-2 border border-gray-200 bg-white"
+      />
+    ),
+    tags: ["overlay", "screen", "eye strain", "PyWin32", "Python", "windows", "opacity"],
+    rating: 4.7,
+    download: "https://github.com/aashishrajput9838/nightlayer/releases",
+  },
+]
+
 export default function Component() {
   const [search, setSearch] = useState("")
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [recentSearches, setRecentSearches] = useState<string[]>([])
-  const [popular, setPopular] = useState<SearchResult[]>([])
+  const [popular, setPopular] = useState<PopularSoftware[]>([])
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1)
   const [darkMode, setDarkMode] = useState(false)
   const [language, setLanguage] = useState<'en' | 'hi'>('en')
@@ -188,60 +241,6 @@ export default function Component() {
     setShowSuggestions(false)
     router.push(result.link)
   }
-
-  const softwareCards = [
-    {
-      title: "Typink",
-      link: "/typink",
-      description: "A powerful auto-typing tool with a modern UI.",
-      icon: (
-        <Image
-          src="/images/Typink-logo.png"
-          alt="Typink Logo"
-          width={95}
-          height={95}
-          className="rounded-full mr-2 border border-gray-200 bg-white"
-        />
-      ),
-      tags: ["auto-typing", "Python", "CustomTkinter", "PyAutoGUI", "automation", "typing"],
-      rating: 4.8,
-      download: "https://github.com/aashishrajput9838/typink/releases",
-    },
-    {
-      title: "GlassTick",
-      link: "/floating-clock",
-      description: "A minimal, transparent floating clock widget.",
-      icon: (
-        <Image
-          src="/images/GlassStick.png"
-          alt="GlassTick Logo"
-          width={95}
-          height={95}
-          className="rounded-full mr-2 border border-gray-200 bg-white"
-        />
-      ),
-      tags: ["clock", "floating", "transparent", "CustomTkinter", "Python", "widget", "windows"],
-      rating: 4.5,
-      download: "https://github.com/aashishrajput9838/glasstick/releases",
-    },
-    {
-      title: "NightLayer",
-      link: "/nightlayer",
-      description: "A screen overlay tool to reduce eye strain.",
-      icon: (
-        <Image
-          src="/images/nightLayer.png"
-          alt="NightLayer Logo"
-          width={95}
-          height={95}
-          className="rounded-full mr-2 border border-gray-200 bg-white"
-        />
-      ),
-      tags: ["overlay", "screen", "eye strain", "PyWin32", "Python", "windows", "opacity"],
-      rating: 4.7,
-      download: "https://github.com/aashishrajput9838/nightlayer/releases",
-    },
-  ]
 
   const suggestions = search.trim()
     ? softwareCards.filter(card => {
