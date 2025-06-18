@@ -6,7 +6,6 @@ import {
   Menu,
   Code,
   Search,
-  Home,
   Moon,
   Sun,
   Star
@@ -178,7 +177,7 @@ export default function Component() {
         setPopular(sorted)
       }
     }
-  }, [search, softwareCards])
+  }, [search])
 
   // Reset highlighted index when suggestions or search changes
   useEffect(() => {
