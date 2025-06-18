@@ -263,133 +263,126 @@ export default function Component() {
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center space-x-4">
               <Image src="/new logo.jpg" alt="Aspirinexar Logo" width={50} height={50} className="rounded-full my-0" />
-              
-              <div className="flex space-x-6">
-                <Link href="#home" className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors">
-                  <Home className="h-5 w-5" />
-                  <span className="text-sm font-medium">{t.home}</span>
-                </Link>
-                <div className="relative flex items-center bg-gray-800 rounded-full pl-3 pr-2 py-2">
-                  <Search className="h-5 w-5 text-gray-400 mr-2" />
-                  <input 
-                    type="text" 
-                    placeholder={t.searchPlaceholder}
-                    className="bg-transparent text-white placeholder-gray-400 focus:outline-none w-64"
-                    value={search}
-                    onChange={e => {
-                      setSearch(e.target.value)
-                      setShowSuggestions(true)
-                    }}
-                    onFocus={() => setShowSuggestions(true)}
-                    onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
-                    onKeyDown={e => {
-                      if (showSuggestions && search.trim() && suggestions.length > 0) {
-                        if (e.key === "ArrowDown") {
-                          e.preventDefault()
-                          setHighlightedIndex(i => (i + 1) % suggestions.length)
-                        } else if (e.key === "ArrowUp") {
-                          e.preventDefault()
-                          setHighlightedIndex(i => (i - 1 + suggestions.length) % suggestions.length)
-                        } else if (e.key === "Enter") {
-                          if (highlightedIndex >= 0 && highlightedIndex < suggestions.length) {
-                            handleSuggestionClick(suggestions[highlightedIndex])
-                          } else if (search.trim()) {
-                            // Add to recent searches (avoid duplicates, max 5)
-                            setRecentSearches(prev => {
-                              const filtered = prev.filter(item => item.toLowerCase() !== search.trim().toLowerCase())
-                              return [search.trim(), ...filtered].slice(0, 5)
-                            })
-                            setShowSuggestions(false)
-                            // Increment popular count if matches a software
-                            const match = softwareCards.find(card => card.title.toLowerCase() === search.trim().toLowerCase())
-                            if (match) incrementPopular(match.title)
-                          }
+              <div className="relative flex items-center bg-gray-800 rounded-full pl-3 pr-2 py-2 ml-4">
+                <Search className="h-5 w-5 text-gray-400 mr-2" />
+                <input 
+                  type="text" 
+                  placeholder={t.searchPlaceholder}
+                  className="bg-transparent text-white placeholder-gray-400 focus:outline-none w-64"
+                  value={search}
+                  onChange={e => {
+                    setSearch(e.target.value)
+                    setShowSuggestions(true)
+                  }}
+                  onFocus={() => setShowSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+                  onKeyDown={e => {
+                    if (showSuggestions && search.trim() && suggestions.length > 0) {
+                      if (e.key === "ArrowDown") {
+                        e.preventDefault()
+                        setHighlightedIndex(i => (i + 1) % suggestions.length)
+                      } else if (e.key === "ArrowUp") {
+                        e.preventDefault()
+                        setHighlightedIndex(i => (i - 1 + suggestions.length) % suggestions.length)
+                      } else if (e.key === "Enter") {
+                        if (highlightedIndex >= 0 && highlightedIndex < suggestions.length) {
+                          handleSuggestionClick(suggestions[highlightedIndex])
+                        } else if (search.trim()) {
+                          // Add to recent searches (avoid duplicates, max 5)
+                          setRecentSearches(prev => {
+                            const filtered = prev.filter(item => item.toLowerCase() !== search.trim().toLowerCase())
+                            return [search.trim(), ...filtered].slice(0, 5)
+                          })
+                          setShowSuggestions(false)
+                          // Increment popular count if matches a software
+                          const match = softwareCards.find(card => card.title.toLowerCase() === search.trim().toLowerCase())
+                          if (match) incrementPopular(match.title)
                         }
-                      } else if (e.key === "Enter" && search.trim()) {
-                        // Add to recent searches (avoid duplicates, max 5)
-                        setRecentSearches(prev => {
-                          const filtered = prev.filter(item => item.toLowerCase() !== search.trim().toLowerCase())
-                          return [search.trim(), ...filtered].slice(0, 5)
-                        })
-                        setShowSuggestions(false)
-                        // Increment popular count if matches a software
-                        const match = softwareCards.find(card => card.title.toLowerCase() === search.trim().toLowerCase())
-                        if (match) incrementPopular(match.title)
                       }
-                    }}
-                  />
-                  {/* Recent Searches Dropdown */}
-                  {showSuggestions && !search.trim() && recentSearches.length > 0 && (
-                    <div className="absolute left-0 top-12 w-full bg-white rounded-b-lg shadow-lg z-50">
-                      <div className="px-4 py-2 text-xs text-gray-500">{t.recentSearches}</div>
-                      {recentSearches.map(term => (
+                    } else if (e.key === "Enter" && search.trim()) {
+                      // Add to recent searches (avoid duplicates, max 5)
+                      setRecentSearches(prev => {
+                        const filtered = prev.filter(item => item.toLowerCase() !== search.trim().toLowerCase())
+                        return [search.trim(), ...filtered].slice(0, 5)
+                      })
+                      setShowSuggestions(false)
+                      // Increment popular count if matches a software
+                      const match = softwareCards.find(card => card.title.toLowerCase() === search.trim().toLowerCase())
+                      if (match) incrementPopular(match.title)
+                    }
+                  }}
+                />
+                {/* Recent Searches Dropdown */}
+                {showSuggestions && !search.trim() && recentSearches.length > 0 && (
+                  <div className="absolute left-0 top-12 w-full bg-white rounded-b-lg shadow-lg z-50">
+                    <div className="px-4 py-2 text-xs text-gray-500">{t.recentSearches}</div>
+                    {recentSearches.map(term => (
+                      <div
+                        key={term}
+                        className="px-4 py-2 text-black hover:bg-blue-100 cursor-pointer"
+                        onMouseDown={() => handleSearchSelect(term)}
+                      >
+                        {term}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {/* Suggestions Dropdown */}
+                {showSuggestions && search.trim() && (
+                  <div
+                    className={`absolute left-0 top-12 w-full bg-white rounded-b-lg shadow-lg z-50 transition-all duration-300 transform
+                      ${showSuggestions ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'}`}
+                    style={{ willChange: 'opacity, transform' }}
+                  >
+                    {suggestions.length > 0 ? (
+                      suggestions.map((s, idx) => (
                         <div
-                          key={term}
-                          className="px-4 py-2 text-black hover:bg-blue-100 cursor-pointer"
-                          onMouseDown={() => handleSearchSelect(term)}
+                          key={s.title}
+                          className={`flex items-start px-4 py-2 text-black hover:bg-blue-100 cursor-pointer ${highlightedIndex === idx ? 'bg-blue-100' : ''}`}
+                          onMouseDown={() => handleSuggestionClick(s)}
+                          aria-selected={highlightedIndex === idx}
                         >
-                          {term}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {/* Suggestions Dropdown */}
-                  {showSuggestions && search.trim() && (
-                    <div
-                      className={`absolute left-0 top-12 w-full bg-white rounded-b-lg shadow-lg z-50 transition-all duration-300 transform
-                        ${showSuggestions ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'}`}
-                      style={{ willChange: 'opacity, transform' }}
-                    >
-                      {suggestions.length > 0 ? (
-                        suggestions.map((s, idx) => (
-                          <div
-                            key={s.title}
-                            className={`flex items-start px-4 py-2 text-black hover:bg-blue-100 cursor-pointer ${highlightedIndex === idx ? 'bg-blue-100' : ''}`}
-                            onMouseDown={() => handleSuggestionClick(s)}
-                            aria-selected={highlightedIndex === idx}
-                          >
-                            <span className="mt-0.5">{s.icon}</span>
-                            <div>
-                              <div className="font-medium flex items-center gap-2">{s.title}
-                                <span className="flex items-center">
-                                  {Array.from({ length: 5 }).map((_, i) => (
-                                    <Star key={i} className={`h-4 w-4 ${i < Math.round(s.rating) ? 'text-yellow-400' : 'text-gray-300'}`} fill={i < Math.round(s.rating) ? '#facc15' : 'none'} />
-                                  ))}
-                                  <span className="ml-1 text-xs text-gray-500">{s.rating.toFixed(1)}</span>
-                                </span>
-                              </div>
-                              <div className="text-xs text-gray-500">{s.description}</div>
-                              <div className="flex gap-2 mt-2">
-                                <button
-                                  className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs transition"
-                                  onMouseDown={e => {
-                                    e.preventDefault();
-                                    router.push(s.link);
-                                  }}
+                          <span className="mt-0.5">{s.icon}</span>
+                          <div>
+                            <div className="font-medium flex items-center gap-2">{s.title}
+                              <span className="flex items-center">
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                  <Star key={i} className={`h-4 w-4 ${i < Math.round(s.rating) ? 'text-yellow-400' : 'text-gray-300'}`} fill={i < Math.round(s.rating) ? '#facc15' : 'none'} />
+                                ))}
+                                <span className="ml-1 text-xs text-gray-500">{s.rating.toFixed(1)}</span>
+                              </span>
+                            </div>
+                            <div className="text-xs text-gray-500">{s.description}</div>
+                            <div className="flex gap-2 mt-2">
+                              <button
+                                className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs transition"
+                                onMouseDown={e => {
+                                  e.preventDefault();
+                                  router.push(s.link);
+                                }}
+                              >
+                                {t.learnMore}
+                              </button>
+                              {s.download && (
+                                <a
+                                  href={s.download}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-xs transition"
+                                  onMouseDown={e => e.stopPropagation()}
                                 >
-                                  {t.learnMore}
-                                </button>
-                                {s.download && (
-                                  <a
-                                    href={s.download}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-xs transition"
-                                    onMouseDown={e => e.stopPropagation()}
-                                  >
-                                    {t.downloadBtn}
-                                  </a>
-                                )}
-                              </div>
+                                  {t.downloadBtn}
+                                </a>
+                              )}
                             </div>
                           </div>
-                        ))
-                      ) : (
-                        <div className="px-4 py-2 text-gray-500">{t.noMatches}</div>
-                      )}
-                    </div>
-                  )}
-                </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="px-4 py-2 text-gray-500">{t.noMatches}</div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 
