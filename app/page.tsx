@@ -389,7 +389,7 @@ export default function Component() {
               <Link href="#home" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
                 {t.home}
               </Link>
-              <Link href="#premium" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+              <Link href="/premium" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
                 {t.premium}
               </Link>
               <Link href="/support" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
