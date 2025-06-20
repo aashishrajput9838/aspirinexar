@@ -395,7 +395,7 @@ export default function Component() {
               <Link href="/support" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
                 {t.support}
               </Link>
-              <Link href="#download" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+              <Link href="/download" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
                 {t.download}
               </Link>
               <Link href="#install-app" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
@@ -451,6 +451,11 @@ export default function Component() {
                 <p className="text-xl text-gray-600 leading-relaxed">
                   {t.heroDesc}
                 </p>
+                <Link href="/download">
+                  <Button className="mt-6 px-8 py-3 text-lg font-bold rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg transition-transform hover:scale-105">
+                    {t.downloadBtn}
+                  </Button>
+                </Link>
               </div>
             </div>
 
